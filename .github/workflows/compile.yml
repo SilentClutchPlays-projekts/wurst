@@ -5,7 +5,7 @@ on:
     branches: [ "1.21.1" ]
   pull_request:
     branches: [ "1.21.1" ]
-  workflow_dispatch: # Võimaldab sul nuppu vajutades ehitust käsitsi alustada
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,12 +18,16 @@ jobs:
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
-        java-version: '21' # Minecraft 1.21.1 nõuab töötamiseks Java 21 versiooni
+        java-version: '21'
         distribution: 'temurin'
         cache: 'gradle'
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
+    # See samm parandab automaatselt kõik litsentsipäiste ja koodi vormingu vead
+    - name: Fix code formatting and license headers
+      run: ./gradlew spotlessApply
 
     - name: Build with Gradle
       run: ./gradlew build
