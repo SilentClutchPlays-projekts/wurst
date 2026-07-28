@@ -1,0 +1,35 @@
+name: Compile Wurst 1.21.1
+
+on:
+  push:
+    branches: [ "1.21.1" ]
+  pull_request:
+    branches: [ "1.21.1" ]
+  workflow_dispatch: # Võimaldab sul nuppu vajutades ehitust käsitsi alustada
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21' # Minecraft 1.21.1 nõuab töötamiseks Java 21 versiooni
+        distribution: 'temurin'
+        cache: 'gradle'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    - name: Upload Compiled JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: Wurst-1.21.1
+        path: build/libs/*.jar
